@@ -9,12 +9,15 @@ GENDER_CHOICES = (
     ('FEM','Femenino'),
     ('O','Otros')
 )
-
+Membership_CHOICES = (
+    ('M','Mensual'),
+    ('T','Trimestral'),
+    ('A','Anual')
+)
 
 class Membership(models.Model):
-    monthly = models.IntegerField()
-    tree_months = models.IntegerField()
-    one_year = models.IntegerField()
+    time = models.CharField(max_length=3, choices=Membership_CHOICES)
+   
 
 class User(AbstractBaseUser,PermissionsMixin):
     dni = models.IntegerField(unique=True, null=True, blank=True)
