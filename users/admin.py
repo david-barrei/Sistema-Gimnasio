@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import User,Membership
+from .models import User,Membership,Client
 # Register your models here.
 
 @admin.register(User)
@@ -15,7 +15,16 @@ class UserAdmin(admin.ModelAdmin):
 class MembershipAdmin(admin.ModelAdmin):
     list_display=(
         
-        "time",
+        "client",
+        "membership_type",
+        'is_active'
       
     )
 
+@admin.register(Client)
+class ClientpAdmin(admin.ModelAdmin):
+    list_display=(
+        
+        "first_name",
+        
+    )
