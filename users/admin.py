@@ -15,7 +15,7 @@ class UserAdmin(admin.ModelAdmin):
 class MembershipAdmin(admin.ModelAdmin):
     list_display=(
         
-        "monthly",
+        "time",
       
     )
 
