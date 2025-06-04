@@ -31,18 +31,17 @@ class Client(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-
-
-class Membership(models.Model):
-    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     membership_type = models.CharField(choices=MEMBERSHIP_CHOICES)
-    price = models.DecimalField(max_digits=5,decimal_places=2)
     start_date = models.DateField(default=timezone.now)
     end_date = models.DateField()
+
+
+# class Membership(models.Model):
+#     client = models.ForeignKey(Client, on_delete=models.CASCADE)
+#     membership_type = models.CharField(choices=MEMBERSHIP_CHOICES)
+#     price = models.DecimalField(max_digits=5,decimal_places=2)
+#     start_date = models.DateField(default=timezone.now)
+#     end_date = models.DateField()
    
     def save(self, *args,**kwargs):
         if not self.end_date:
@@ -67,7 +66,7 @@ class User(AbstractBaseUser,PermissionsMixin):
     address = models.CharField(max_length=255, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    membership = models.ForeignKey(Membership, on_delete=models.CASCADE, null=True, blank=True)
+ 
 
     # modelos obligatorios para los mixins 
     is_staff = models.BooleanField(default=False)
