@@ -1,3 +1,4 @@
+from typing import Iterable
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from .managers import UserManager
@@ -18,11 +19,11 @@ MEMBERSHIP_CHOICES = (
     ('T','Trimestral'),
     ('A','Anual')
 )
-DURATION_BY_TYPE = {
+DURATION_DAYS = {
     'D':1,
     'M': 30,
     'T': 90,
-    'A': 165,
+    'A': 365,
 }
 
 
@@ -31,30 +32,21 @@ class Client(models.Model):
     last_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     phone = models.CharField(max_length=20)
-    membership_type = models.CharField(choices=MEMBERSHIP_CHOICES)
+    membership_type = models.CharField(choices=MEMBERSHIP_CHOICES, default='M')
     start_date = models.DateField(default=timezone.now)
-    end_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True )
 
 
-# class Membership(models.Model):
-#     client = models.ForeignKey(Client, on_delete=models.CASCADE)
-#     membership_type = models.CharField(choices=MEMBERSHIP_CHOICES)
-#     price = models.DecimalField(max_digits=5,decimal_places=2)
-#     start_date = models.DateField(default=timezone.now)
-#     end_date = models.DateField()
-   
-    def save(self, *args,**kwargs):
-        if not self.end_date:
-            duration_days = DURATION_BY_TYPE.get(self.membership_type,30)
-            self.end_date = self.start_date + timedelta(days = duration_days)
-        super().save(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        # recalculamos siempre la fecha de fin en base a start_date y membership_type
+            days = DURATION_DAYS.get(self.membership_type,30)
 
-    def is_active(self, *args, **kwargs):
-        today = timezone.now().date()
-        return self.start_date <= today <= self.end_date
+            self.end_date = self.start_date + timedelta(days=days)
+            super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"{self.client} - {self.get_membership_type_display()}"
+    def is_active(self):
+        hoy = timezone.now().date()
+        return hoy >= self.start_date and hoy <= self.end_date
 
 
 class User(AbstractBaseUser,PermissionsMixin):
