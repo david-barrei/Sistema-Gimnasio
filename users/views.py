@@ -23,6 +23,11 @@ class RegisterUser(viewsets.GenericViewSet,
 
 class LoginJWTView(APIView):
      
+      # 1) Permitimos el acceso sin token
+     permission_classes = [AllowAny]
+     # 2) Desactivamos cualquier autenticación previa
+     authentication_classes = []
+     
      def post(self,request):
           email = request.data.get('email')
           password = request.data.get('password')
@@ -33,7 +38,7 @@ class LoginJWTView(APIView):
                Token.objects.filter(user=user).delete()
                token = Token.objects.create(user=user)
 
-               expired = timezone.now()  + timedelta(minutes=1)
+               expired = timezone.now()  + timedelta(minutes=10)
                user.token_expired = expired
                user.save()
 
@@ -47,4 +52,4 @@ class ClientViews(CreateAPIView):
     queryset = Client.objects.all()
 
 
-    
+
