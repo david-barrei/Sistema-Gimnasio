@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.generics import CreateAPIView
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ClientSerializers
 from .models import User,Client
 
 class RegisterUser(viewsets.GenericViewSet,
@@ -41,3 +41,10 @@ class LoginJWTView(APIView):
           else:
                return Response({'error':'Credenciales no validas '},status=status.HTTP_401_UNAUTHORIZED)
 
+class ClientViews(CreateAPIView):
+     
+    serializer_class = ClientSerializers
+    queryset = Client.objects.all()
+
+
+    

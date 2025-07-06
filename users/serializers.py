@@ -25,6 +25,18 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
     
 
+class ClientSerializers(serializers.ModelSerializer):
+    class Meta:
+        model = Client
+        fields =(
+            'first_name',
+            'last_name',
+            'email',
+            'phone',
+            'membership_type',
+            'start_date',
+            'end_date'
+        )
 
 
 
