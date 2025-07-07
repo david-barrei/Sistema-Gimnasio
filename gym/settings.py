@@ -25,6 +25,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+
 
 # Application definition
 
@@ -36,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
-    'users',
+    'django_celery_beat',
+    'users.apps.MembershipConfig',
+    
     'post',
     'sales',
 ]
@@ -102,6 +107,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# STMP DE GMAIL
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_BEAT_SCHEDULER  = "django_celery_beat.schedulers:DatabaseScheduler"
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'kevtamay@gmail.com'
+EMAIL_HOST_PASSWORD = 'kevintay88@@'
+
 
 AUTH_USER_MODEL = 'users.User'
 

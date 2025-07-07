@@ -39,12 +39,14 @@ class Client(models.Model):
 
     def save(self, *args, **kwargs):
         # recalculamos siempre la fecha de fin en base a start_date y membership_type
-            days = DURATION_DAYS.get(self.membership_type,30)
-
+        if self.start_date:
+            days = DURATION_DAYS.get(self.membership_type, 30)
             self.end_date = self.start_date + timedelta(days=days)
-            super().save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def is_active(self):
+        if not self.end_date:
+            return False
         hoy = timezone.now().date()
         return hoy >= self.start_date and hoy <= self.end_date
 
