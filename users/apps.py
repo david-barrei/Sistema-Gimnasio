@@ -15,6 +15,13 @@ class MembershipConfig(AppConfig):
         from django_celery_beat.models import PeriodicTask, IntervalSchedule
         from .tasks import remind_expiring_clients
 
+        # Intenta limpiar duplicados si los hay
+        qs = IntervalSchedule.objects.filter(every=1, period=IntervalSchedule.DAYS)
+        if qs.count() > 1:
+            # deja solo la más antigua
+            first = qs.earliest('id')
+            qs.exclude(pk=first.pk).delete()
+
         # crear un schedule que corra cada dia
         schedule, _ = IntervalSchedule.objects.get_or_create(
             every =1,
@@ -22,8 +29,11 @@ class MembershipConfig(AppConfig):
         )
         # registra la tarea si no existe
 
-        PeriodicTask.objects.get_or_create(
-            interval=schedule,
-            name='Recordatorio vencimiento membresias',
-            task = 'memberships.tasks.remind_expiring_memberships',
+        PeriodicTask.objects.update_or_create(
+            name="Tarea periódica",  # campo único
+            defaults={
+                "interval": schedule,
+                "task": "users.tasks.remind_expiring_clients",
+                # si pasas args, kwargs, start_time, etc. ponlos aquí dentro de defaults
+            }
         )

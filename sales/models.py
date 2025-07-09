@@ -20,7 +20,7 @@ class Sale(models.Model):
     
 
     def __str__(self):
-        return self.total
+        return self.user
     
 
     def recalculate_total(self):
@@ -40,7 +40,7 @@ class SaleDetail(models.Model):
 
 
     def __str__(self):
-        return self.subtotal
+        return self.sale
     
     def save(self, *args, **kwargs):
         #tomamos el precio actual del producto

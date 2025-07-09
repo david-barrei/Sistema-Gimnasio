@@ -42,3 +42,12 @@ def sales_by_month(request):
     ) # formatea como [{ "month": "2025-01", "total": 1234.50 }, …]
     data = [{"month": g["month"].strftime("%Y-%m"), "total":g["total"]} for g in qs]
     return Response(data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def low_stock_alert(request):
+    threshold = int(request.query_params.get("threshold",5))
+    qs = Product.objects.filter(stock__lte=threshold)
+    data = [{"id": p.id, "name": p.name, "stock": p.stock} for p in qs]
+    return Response(data)
