@@ -32,7 +32,6 @@ class SaleViews(viewsets.ModelViewSet):
         serializer.save(user=self.request.user)
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def sales_by_month(request):
     qs = (
         Sale.objects.annotate(month=TruncMonth("date"))
@@ -45,7 +44,6 @@ def sales_by_month(request):
 
 
 @api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def low_stock_alert(request):
     threshold = int(request.query_params.get("threshold",5))
     qs = Product.objects.filter(stock__lte=threshold)
