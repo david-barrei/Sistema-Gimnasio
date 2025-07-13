@@ -10,8 +10,8 @@ router.register(r'sales', SaleViews, basename='sale')
 
 urlpatterns = [
     path('product/',ProductViews.as_view(),name='product'),
-    path('sales-month/',sales_by_month(),name='sales_by_month'),
-    path('low_stock/',low_stock_alert.as_view(),name='stock'),
+    path('sales-month/',sales_by_month,name='sales_by_month'),
+    path('low_stock/',low_stock_alert,name='stock'),
 
 ]+ router.urls
 
