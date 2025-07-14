@@ -1,7 +1,7 @@
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions    import IsAuthenticated
 
-from rest_framework.generics import CreateAPIView,ListAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from .serializers import PostSerializer
 from .models import PostModels
 # Create your views here.
@@ -15,5 +15,23 @@ class PostCreate(CreateAPIView):
         # automáticamente asigna el admin autenticado
         serializer.save(admin=self.request.user)
 
+class PostDetail(RetrieveAPIView):
+    lookup_field = 'pk'
+    serializer_class = PostSerializer
+    queryset = PostModels.objects.all()
+
+
 class PostList(ListAPIView):
-    pass
+    serializer_class = PostSerializer
+    queryset = PostModels.objects.all()
+
+class PostUpdate(UpdateAPIView):
+    lookup_field = 'pk'
+    serializer_class = PostSerializer
+    queryset = PostModels.objects.all()
+
+class PostDestroy(DestroyAPIView):
+    lookup_field = 'pk'
+    serializer_class =PostSerializer
+    queryset = PostModels.objects.all()
+
