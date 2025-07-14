@@ -6,7 +6,7 @@ from django.contrib.auth import authenticate
 from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from rest_framework.views import APIView
 from rest_framework.authtoken.models import Token
 from .serializers import RegisterSerializer, ClientSerializers
@@ -50,6 +50,25 @@ class ClientViews(CreateAPIView):
      
     serializer_class = ClientSerializers
     queryset = Client.objects.all()
+
+class ClientDetail(RetrieveAPIView):
+
+     serializer_class = ClientSerializers
+     queryset = Client.objects.all()
+
+class ClientList(ListAPIView):
+
+     serializer_class = ClientSerializers
+     queryset = Client.objects.all()
+
+class ClientUpdate(UpdateAPIView):
+
+     serializer_class = ClientSerializers
+     queryset = Client.objects.all()
+
+class ClientDestroy(DestroyAPIView):
+
+     queryset = Client.objects.all()
 
 
 
