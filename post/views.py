@@ -16,7 +16,7 @@ class PostCreate(CreateAPIView):
         serializer.save(admin=self.request.user)
 
 class PostDetail(RetrieveAPIView):
-    lookup_field = 'pk'
+   
     serializer_class = PostSerializer
     queryset = PostModels.objects.all()
 
@@ -26,7 +26,7 @@ class PostList(ListAPIView):
     queryset = PostModels.objects.all()
 
 class PostUpdate(UpdateAPIView):
-    lookup_field = 'pk'
+   
     serializer_class = PostSerializer
     queryset = PostModels.objects.all()
 

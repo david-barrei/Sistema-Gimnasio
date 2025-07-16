@@ -10,7 +10,7 @@ urlpatterns = [
     #PRODUCTOS
     path('product/create/',ProductViews.as_view(),name='product-create'),
     path('product/list/',ProductList.as_view(),name='product-list'),
-    path('product/detail/<int:pk>',ProductDetail.as_view(),name='product-detail'),
+    path('product/detail/<int:pk>/',ProductDetail.as_view(),name='product-detail'),
     path('product/update/<int:pk>/',ProductUpdate.as_view(),name='product-update'),
     path('product/destroy/<int:pk>/',ProductDestroy.as_view(),name='product-destroy'),
     # VENTAS

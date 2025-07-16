@@ -34,9 +34,9 @@ schema_view = get_schema_view(
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('users/', include('users.urls')),
-    path('sales/', include('sales.urls')),
-    path('post/', include('post.urls')),
+    path('', include('users.urls')),
+    path('', include('sales.urls')),
+    path('', include('post.urls')),
 
      # … tus rutas de API …
     re_path(r'^swagger(?P<format>\.json|\.yaml)$',
