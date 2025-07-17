@@ -10,6 +10,10 @@ urlpatterns = [
     path("post/detail/<int:pk>",PostDetail.as_view(),name = "post-detail"),
     path("post/update/<int:pk>",PostUpdate.as_view(),name = "post-update"),
     path("post/delete/<int:pk>",PostDestroy.as_view(),name = "post-destroy"),
+
+    #numero de Post
+    path("post/delete/<int:pk>",PostDestroy.as_view(),name = "post-destroy"),
+    path("post/delete/<int:pk>",PostDestroy.as_view(),name = "post-destroy"),
 ]
 
 
