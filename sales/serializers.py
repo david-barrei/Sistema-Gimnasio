@@ -19,7 +19,6 @@ class SaleDetailSerializers(serializers.ModelSerializer):
 
     product = serializers.PrimaryKeyRelatedField(
         queryset = Product.objects.all(),
-        
 
     )
     price = serializers.DecimalField(
@@ -38,6 +37,7 @@ class SaleWriteSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField( default= serializers.CurrentUserDefault())
     items = SaleDetailSerializers(many=True)
     details = SaleDetailSerializers(many=True, source= 'items', read_only=True)
+    print(f"------ {items}")
 
     class Meta:
         model = Sale
@@ -45,11 +45,14 @@ class SaleWriteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id','date','total','details']
 
     def create(self,validated_data):
+        print("🔔 [Serializer] validated_data before pop:")
         items_data = validated_data.pop('items')
-
+        print("🔔 [Serializer] items to create:", + items_data)
         sale = Sale.objects.create(**validated_data)
+        print(f"🆕 Venta creada con ID={sale.pk}")
 
-        for line in items_data:
+        for idx, line in items_data:
+            print(f"   ➡️ Creando línea #{idx} con:", line)
             SaleDetail.objects.create(sale=sale, **line)
         
         sale.recalculate_total()
