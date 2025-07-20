@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.conf import settings
 from .models import Product,Sale,SaleDetail
-
+from pprint import pprint
 
 class ProductSerializers(serializers.ModelSerializer):
    
@@ -35,9 +35,9 @@ class SaleDetailSerializers(serializers.ModelSerializer):
 
 class SaleWriteSerializer(serializers.ModelSerializer):
     user = serializers.HiddenField( default= serializers.CurrentUserDefault())
-    items = SaleDetailSerializers(many=True)
+    items = SaleDetailSerializers(many=True, write_only=True)
     details = SaleDetailSerializers(many=True, source= 'items', read_only=True)
-    print(f"------ {items}")
+    
 
     class Meta:
         model = Sale
@@ -45,14 +45,13 @@ class SaleWriteSerializer(serializers.ModelSerializer):
         read_only_fields = ['id','date','total','details']
 
     def create(self,validated_data):
-        print("🔔 [Serializer] validated_data before pop:")
+       
         items_data = validated_data.pop('items')
-        print("🔔 [Serializer] items to create:", + items_data)
-        sale = Sale.objects.create(**validated_data)
-        print(f"🆕 Venta creada con ID={sale.pk}")
 
-        for idx, line in items_data:
-            print(f"   ➡️ Creando línea #{idx} con:", line)
+        sale = Sale.objects.create(**validated_data)
+        
+        for  line in items_data:
+            
             SaleDetail.objects.create(sale=sale, **line)
         
         sale.recalculate_total()

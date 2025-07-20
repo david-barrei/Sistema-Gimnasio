@@ -55,7 +55,7 @@ class SaleCreate(CreateAPIView):
     queryset = Sale.objects.all().order_by('-date')
 
     def perform_create(self, serializer):
-
+        
         serializer.save(user=self.request.user)
 
 
