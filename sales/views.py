@@ -3,6 +3,7 @@ from django.db.models.functions import TruncMonth
 from django.db.models import Sum
 from .models import Product,Sale
 from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer
+from .utils import adjust_stock_for_sale
 
 # Create your views here.
 from rest_framework import viewsets
@@ -55,7 +56,13 @@ class SaleCreate(CreateAPIView):
     queryset = Sale.objects.all().order_by('-date')
 
     def perform_create(self, serializer):
+        # 1) Toma la lista de líneas de venta que vino en el JSON under "items"
+        items = self.request.data.get('items',[])
         
+        # 2) Para cada línea, busca el producto y ajusta su stock
+        for line in items:
+            prod = Product.objects.get(pk=line['product'])
+            adjust_stock_for_sale(prod, int(line['quantity']))
         serializer.save(user=self.request.user)
 
 
@@ -83,7 +90,6 @@ class SaleDestroy(DestroyAPIView):
     lookup_field = 'pk'
     queryset = Sale.objects.all()
     
-
 
 
 
