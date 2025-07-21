@@ -2,6 +2,7 @@ from django.conf import settings
 from decimal import Decimal
 from django.db import models
 from users.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Product(models.Model):
@@ -12,6 +13,9 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+
+
 
 class Sale(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name='sales')
@@ -52,3 +56,46 @@ class SaleDetail(models.Model):
         self.sale.recalculate_total()
 
 
+class CashSession(models.Model):
+    opened_at = models.DateTimeField(auto_now_add=True)
+    opened_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    opening_balance = models.DecimalField(max_digits=10, decimal_places=2)
+    closed_at = models.DateTimeField(null=True, blank=True)
+    closing_balance = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+
+    def expected_balance(self):
+        sales = self.transactions.filter(type='sale').aggregate(total=models.Sum('amount'))['total'] or 0
+        expenses = self.transactions.filter(type='expense').aggregate(total=models.Sum('amount'))['total'] or 0
+        withdraws = self.transactions.filter(type='withdraw').aggregate(total=models.Sum('amount'))['total'] or 0
+        return self.opening_balance + sales - (expenses + withdraws)
+    
+
+    def close(self, counted_amount):
+        self.closing_balance = counted_amount
+        self.closed_at = timezone.now()
+        self.save()
+
+    def __str__(self):
+        status= 'CERRADA' if self.closed_at else 'ABIERTA'
+        return f" { self.id} ({ self.status})"
+    
+
+class CashTransaction(models.Model):
+    SESSION_TYPES = [
+        ('sale', 'Venta'),
+        ('expense', 'Gasto'),
+        ('withdraw','Retiro'),
+    ]
+
+    session = models.ForeignKey(CashSession, related_name="transactions", on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    type = models.CharField(max_length=10,choices=SESSION_TYPES)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    description = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return f"{self.get_type_display()} $ {self.amount} en caja {self.session.id}"
+    
+
+
+    

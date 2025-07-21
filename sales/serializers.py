@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from .models import Product,Sale,SaleDetail
+from .models import Product,Sale,SaleDetail,CashTransaction,CashSession
 from pprint import pprint
 
 class ProductSerializers(serializers.ModelSerializer):
@@ -65,7 +65,23 @@ class SaleReadSerializer(serializers.ModelSerializer):
         fields = ['id','user','date','total','details']
         read_only_fields = fields
 
+class CashTransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CashTransaction
+        fields = ['id','timestamp','type','amount','description']
 
+class CashSessionSerializer(serializers.ModelSerializer):
+    opened_by = serializers.StringRelatedField(read_only = True)
+    transactions = CashTransactionSerializer(many=True, read_only =True)
+    expected_balance = serializers.DecimalField(max_digits=10, decimal_places=2, read_only=True)
+
+    class Meta:
+        model = CashSession
+        fields = [
+            'id','opened_at','opened_by','opening_balance',
+            'closed_at','closing_balance','expected_balance','transactions',
+        ]
+        read_only_fields = ['id','opened_at','opened_by','opening_balance','closed_at','expected_balance','transactions']
 
 
 
