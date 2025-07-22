@@ -24,7 +24,7 @@ class Sale(models.Model):
     
 
     def __str__(self):
-        return self.user
+        return f"{self.user}"
     
 
     def recalculate_total(self):
@@ -44,7 +44,7 @@ class SaleDetail(models.Model):
 
 
     def __str__(self):
-        return self.sale
+        return f"{ self.sale}"
     
     def save(self, *args, **kwargs):
         #tomamos el precio actual del producto
@@ -75,7 +75,8 @@ class CashSession(models.Model):
         self.closed_at = timezone.now()
         self.save()
 
-    def __str__(self):
+    @property
+    def status(self):
         status= 'CERRADA' if self.closed_at else 'ABIERTA'
         return f" { self.id} ({ self.status})"
     
@@ -97,5 +98,3 @@ class CashTransaction(models.Model):
         return f"{self.get_type_display()} $ {self.amount} en caja {self.session.id}"
     
 
-
-    

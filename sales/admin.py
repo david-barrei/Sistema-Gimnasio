@@ -21,7 +21,8 @@ class SaleAdmin(admin.ModelAdmin):
 class SaleAdmin(admin.ModelAdmin):
     list_display = (
         'total',
-        "id"
+        "user",
+        "date"
     )
 
 @admin.register(SaleDetail)

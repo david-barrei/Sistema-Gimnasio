@@ -137,10 +137,12 @@ class CashSessionOpenView(CreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
+        
         # Impide abrir más de una sin cerrar
 
         if CashSession.objects.filter(closed_at__isnull=True).exists():
-            raise serializer.ValidationError('Ya hay una caja abierta')
+            raise ValidationError("Ya hay una caja abierta. Cierra la existente antes de abrir otra.")
+
         serializer.save(opened_by = self.request.user)
 
 #  Consulta sesion activa
@@ -168,12 +170,15 @@ class CashTransactionCreate(CreateAPIView):
 
 @api_view(['POST'])
 def cash_session_close(request):
+    # 1) Localiza la caja abierta
     session = CashSession.objects.filter(closed_at__isnull=True).first()
     if not session:
         return Response({"Detail":"No hay caja abierta."}, status=404)
+    # 2) Lee el monto contado al final
     counted = request.data.get('closing_balance')
-    session.close(counted)
-    return Response(CashSession(session).data)
+    session.close(counted_amount=counted)
+    serializer = CashSession(session)
+    return Response(serializer.data)
 
 
 
