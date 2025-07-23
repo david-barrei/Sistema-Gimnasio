@@ -13,6 +13,7 @@ class SaleAdmin(admin.ModelAdmin):
 @admin.register(CashSession)
 class SaleAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         'opening_balance',
         "closing_balance"
     )
@@ -20,6 +21,7 @@ class SaleAdmin(admin.ModelAdmin):
 @admin.register(Sale)
 class SaleAdmin(admin.ModelAdmin):
     list_display = (
+        "id",
         'total',
         "user",
         "date"

@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.db.models.functions import TruncMonth
 from django.db.models import Sum
 from django.db import transaction
-from .models import Product,Sale
-from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer,CashSession,CashTransaction
+from .models import Product,Sale,CashSession,CashTransaction
+from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer,CashSessionSerializer,CashTransactionSerializer
 from .utils import adjust_stock_for_sale
 # Create your views here.
 from rest_framework import viewsets,permissions
@@ -177,7 +177,7 @@ def cash_session_close(request):
     # 2) Lee el monto contado al final
     counted = request.data.get('closing_balance')
     session.close(counted_amount=counted)
-    serializer = CashSession(session)
+    serializer = CashSessionSerializer(session)
     return Response(serializer.data)
 
 
