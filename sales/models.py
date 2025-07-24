@@ -62,6 +62,8 @@ class CashSession(models.Model):
     opening_balance = models.DecimalField(max_digits=10, decimal_places=2)
     closed_at = models.DateTimeField(null=True, blank=True)
     closing_balance = models.DecimalField(max_digits=10, decimal_places=2,null=True, blank=True)
+    expected_balance = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
+    discrepancy = models.DecimalField(max_digits=10,decimal_places=2,null=True, blank=True)
 
     def expected_balance(self):
         sales = self.transactions.filter(type='sale').aggregate(total=models.Sum('amount'))['total'] or 0
@@ -71,13 +73,21 @@ class CashSession(models.Model):
     
 
     def close(self, counted_amount):
+        # 1) Fijar el closing_balance y la fecha
         self.closing_balance = counted_amount
         self.closed_at = timezone.now()
+
+        # 2) Calcular y guardar expected_balance
+        exp = self.calculate_expected()
+        self.expected_balance = exp
+
+        # 3) Calcular la discrepancia
+        self.discrepancy = (self.closing_balance - exp).quantize(Decimal('0.01'))    
         self.save()
 
-    @property
-    def status(self):
-        status= 'CERRADA' if self.closed_at else 'ABIERTA'
+    
+    def __str__(self):
+        status = 'CERRADA' if self.closed_at else 'ABIERTA'
         return f" { self.id} ({ self.status})"
     
 
