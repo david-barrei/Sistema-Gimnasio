@@ -65,10 +65,15 @@ class SaleReadSerializer(serializers.ModelSerializer):
         fields = ['id','user','date','total','details']
         read_only_fields = fields
 
+
+
+
 class CashTransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = CashTransaction
         fields = ['id','timestamp','type','amount','description']
+
+
 
 class CashSessionSerializer(serializers.ModelSerializer):
     opened_by = serializers.StringRelatedField(read_only = True)
@@ -79,9 +84,10 @@ class CashSessionSerializer(serializers.ModelSerializer):
         model = CashSession
         fields = [
             'id','opened_at','opened_by','opening_balance',
-            'closed_at','closing_balance','expected_balance','transactions',
+            'closed_at','closing_balance','expected_balance','discrepancy','transactions',
         ]
-        read_only_fields = ['id','opened_at','opened_by','opening_balance','closed_at','expected_balance','transactions']
+        read_only_fields = ['id','opened_at','opened_by','opening_balance','closed_at',
+                            'expected_balance','discrepancy','transactions']
 
 
 

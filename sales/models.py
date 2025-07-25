@@ -3,6 +3,7 @@ from decimal import Decimal
 from django.db import models
 from users.models import User
 from django.utils import timezone
+from decimal import Decimal
 
 # Create your models here.
 class Product(models.Model):
@@ -65,7 +66,7 @@ class CashSession(models.Model):
     expected_balance = models.DecimalField(max_digits=10, decimal_places=2,null=True,blank=True)
     discrepancy = models.DecimalField(max_digits=10,decimal_places=2,null=True, blank=True)
 
-    def expected_balance(self):
+    def property_expected(self):
         sales = self.transactions.filter(type='sale').aggregate(total=models.Sum('amount'))['total'] or 0
         expenses = self.transactions.filter(type='expense').aggregate(total=models.Sum('amount'))['total'] or 0
         withdraws = self.transactions.filter(type='withdraw').aggregate(total=models.Sum('amount'))['total'] or 0
@@ -75,20 +76,22 @@ class CashSession(models.Model):
     def close(self, counted_amount):
         # 1) Fijar el closing_balance y la fecha
         self.closing_balance = counted_amount
+        print("valor de closing", self.closing_balance)
         self.closed_at = timezone.now()
-
+        
         # 2) Calcular y guardar expected_balance
-        exp = self.calculate_expected()
+        exp = self.property_expected()
         self.expected_balance = exp
 
         # 3) Calcular la discrepancia
-        self.discrepancy = (self.closing_balance - exp).quantize(Decimal('0.01'))    
+        self.discrepancy = Decimal(str(self.closing_balance )) -  Decimal(str(exp))
+        print("valor de closing 2", self.closing_balance)
         self.save()
-
+                                
     
     def __str__(self):
-        status = 'CERRADA' if self.closed_at else 'ABIERTA'
-        return f" { self.id} ({ self.status})"
+        #status = 'CERRADA' if self.closed_at else 'ABIERTA'
+        return f" { self.id} "
     
 
 class CashTransaction(models.Model):
