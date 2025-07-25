@@ -14,7 +14,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 User = get_user_model()
 
-class PermisionSerializer(serializers.ModelSerializer):
+class PermissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Permission
         fields = ["id","codename","name","content_type"]
@@ -38,3 +38,4 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["id","username","email","groups"]
+
