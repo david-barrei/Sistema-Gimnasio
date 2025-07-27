@@ -1,8 +1,9 @@
 from django.contrib.auth.models import Group, Permission
+from django.contrib.auth import get_user_model
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions    import IsAuthenticated
 from rest_framework import  permissions
-from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
+from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView,RetrieveUpdateAPIView
 from .serializers import PostSerializer, PermissionSerializer, GroupSerializer, UserSerializer
 from .models import PostModels
 # Create your views here.
@@ -47,12 +48,37 @@ class PermissionListApiView(ListAPIView):
     queryset = Permission.objects.all()
     serializer_class = PermissionSerializer
     permission_classes = [permissions.IsAdminUser]
+    
 
 # Grupos listar y crear
 
 class GroupListCreateApi(ListAPIView,CreateAPIView):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+
+# grupos leer actualizar y borrar
+
+class GroupDetailApi(RetrieveUpdateAPIView,DestroyAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+#  usuarios listar 
+
+class UserListApi(ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+# usarios leer y actualizar sus grupos
+class UserDetailApi(RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
     permission_classes = [permissions.IsAdminUser]
 
 
