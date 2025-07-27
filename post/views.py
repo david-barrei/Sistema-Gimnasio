@@ -40,8 +40,24 @@ class PostDestroy(DestroyAPIView):
 # ///////////////// VISTAS PARA ADMINISTRAR GRUPOS Y PERMISOS /////////////////////
 
 
-class PermissionViewSet(CreateAPIView):
+#Permisos de solo lectura
 
-    pass
+class PermissionListApiView(ListAPIView):
+
+    queryset = Permission.objects.all()
+    serializer_class = PermissionSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+# Grupos listar y crear
+
+class GroupListCreateApi(ListAPIView,CreateAPIView):
+    queryset = Group.objects.all()
+    serializer_class = GroupSerializer
+    permission_classes = [permissions.IsAdminUser]
+
+
+
+
+
 
 
