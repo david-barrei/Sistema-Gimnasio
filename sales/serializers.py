@@ -1,5 +1,5 @@
-from rest_framework import serializers
 from django.conf import settings
+from rest_framework import serializers
 from .models import Product,Sale,SaleDetail,CashTransaction,CashSession
 from pprint import pprint
 

@@ -2,15 +2,15 @@ from django.shortcuts import render
 from django.db.models.functions import TruncMonth
 from django.db.models import Sum
 from django.db import transaction
-from .models import Product,Sale,CashSession,CashTransaction
-from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer,CashSessionSerializer,CashTransactionSerializer
-from .utils import adjust_stock_for_sale
-# Create your views here.
 from rest_framework import viewsets,permissions
 from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from .models import Product,Sale,CashSession,CashTransaction
+from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer,CashSessionSerializer,CashTransactionSerializer
+from .utils import adjust_stock_for_sale
+# Create your views here.
 
 
 
@@ -39,17 +39,6 @@ class ProductDestroy(DestroyAPIView):
     queryset = Product.objects.all()
 
 
-
-# class SaleViews(viewsets.ModelViewSet):
-#     queryset = Sale.objects.all().order_by('-date')
-    
-#     def get_serializer_class(self):
-#         if self.action == 'create':
-#             return SaleWriteSerializer
-#         return SaleReadSerializer
-
-#     def perform_create(self, serializer):
-#         serializer.save(user=self.request.user)
 
 
 class SaleCreate(CreateAPIView):

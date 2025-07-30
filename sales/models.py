@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.db import models
 from users.models import User
 from django.utils import timezone
-from decimal import Decimal
 
 # Create your models here.
 class Product(models.Model):
