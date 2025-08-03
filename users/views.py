@@ -21,7 +21,7 @@ class RegisterUser(viewsets.GenericViewSet,
 
 
 
-class LoginJWTView(APIView):
+class LoginTokenView(APIView):
      
       # 1) Permitimos el acceso sin token
      permission_classes = [AllowAny]

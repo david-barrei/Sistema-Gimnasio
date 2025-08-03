@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterUser,LoginJWTView,ClientViews,ClientList,ClientDetail,ClientUpdate,ClientDestroy
+from .views import RegisterUser,LoginTokenView,ClientViews,ClientList,ClientDetail,ClientUpdate,ClientDestroy
 
 from rest_framework.routers import DefaultRouter
 
@@ -9,7 +9,7 @@ router = DefaultRouter()
 router.register(r'register', RegisterUser, basename='register')
 
 urlpatterns = [
-    path('login/',LoginJWTView.as_view(),name='login'),
+    path('login/',LoginTokenView.as_view(),name='login'),
     path('client/',ClientViews.as_view(),name='client'),
     path('client/list/',ClientList.as_view(),name='client-list'),
     path('client/detail/<int:pk>/',ClientDetail.as_view(),name='client-detail'),
