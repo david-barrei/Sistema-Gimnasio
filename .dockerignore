@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+env/
+.env
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Project Specific
+secrets.json
+celerybeat-schedule*
+*.sqlite3
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/

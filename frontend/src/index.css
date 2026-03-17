@@ -1,0 +1,150 @@
+/* App Global Variables */
+:root {
+  --bg-sidebar: #1E293B;  /* Azul oscuro / Slate 800 */
+  --bg-app: #F4F7FE;      /* Gris claro / Slate 50 */
+  --card-bg: #FFFFFF;     /* Blanco */
+  
+  --text-main: #0F172A;   /* Texto principal / Slate 900 */
+  --text-muted: #64748B;  /* Texto secundario / Slate 500 */
+  --text-sidebar: #CBD5E1; /* Texto sidebar inactivo / Slate 300 */
+  
+  --accent-teal: #14B8A6; /* Teal 500 (Verde principal) */
+  --accent-teal-soft: rgba(20, 184, 166, 0.1); /* Teal claro para fondos */
+  
+  --danger: #EF4444;      /* Rojo alertas/expirados */
+  --danger-soft: rgba(239, 68, 68, 0.1); 
+
+  --border-color: #E2E8F0; /* Slate 200 */
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-app);
+  color: var(--text-main);
+}
+
+/* Scrollbar personalizado */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent; 
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-color); 
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted); 
+}
+
+/* Utilidades Comunes */
+.card-custom {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.badge-active {
+  background-color: var(--accent-teal);
+  color: white;
+  padding: 0.35em 0.85em;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.badge-inactive {
+  background-color: var(--text-muted);
+  color: white;
+  padding: 0.35em 0.85em;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.badge-expired {
+  background-color: var(--danger);
+  color: white;
+  padding: 0.35em 0.85em;
+  border-radius: 9999px;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.text-teal {
+  color: var(--accent-teal) !important;
+}
+
+/* Sidebar Custom Styles */
+.sidebar-link {
+  color: var(--text-sidebar);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  border-radius: 12px;
+  transition: all 0.2s ease-in-out;
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-link:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar-link.active {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.sidebar-link.active::before {
+  content: '';
+  position: absolute;
+  left: -1rem; /* Aproximado, depende del padding padre */
+  top: 50%;
+  transform: translateY(-50%);
+  height: 60%;
+  width: 4px;
+  background-color: var(--accent-teal);
+  border-radius: 0 4px 4px 0;
+}
+
+/* Table Action Buttons */
+.action-btn {
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 6px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.action-btn:hover {
+  background-color: var(--bg-app);
+  border: 1px solid var(--border-color);
+  color: var(--accent-teal);
+  box-shadow: var(--shadow-sm);
+}
+
+.action-btn.delete-btn:hover {
+  color: var(--danger);
+  border-color: rgba(239, 68, 68, 0.3); /* Soft danger border */
+}

@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=gym
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=rooot
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  web:
+    build: .
+    restart: always
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+      - ./secrets.json:/app/secrets.json:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+      - redis
+    environment:
+      - DB_NAME=gym
+      - USER=postgres
+      - PASSWORD=rooot
+      - HOST=db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+  celery:
+    build: .
+    restart: always
+    command: celery -A gym worker -l info
+    volumes:
+      - .:/app
+      - ./secrets.json:/app/secrets.json:ro
+    depends_on:
+      - db
+      - redis
+    environment:
+      - HOST=db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+  celery-beat:
+    build: .
+    restart: always
+    command: celery -A gym beat -l info
+    volumes:
+      - .:/app
+      - ./secrets.json:/app/secrets.json:ro
+    depends_on:
+      - db
+      - redis
+    environment:
+      - HOST=db
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+
+  frontend:
+    build: ./frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    depends_on:
+      - web
+
+volumes:
+  postgres_data:

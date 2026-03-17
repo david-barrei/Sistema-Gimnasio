@@ -29,14 +29,21 @@ class ClientSerializers(serializers.ModelSerializer):
     class Meta:
         model = Client
         fields =(
+            'id',
             'first_name',
             'last_name',
             'email',
             'phone',
             'membership_type',
             'start_date',
-            'end_date'
+            'end_date',
+            'is_active'
         )
+
+    is_active = serializers.SerializerMethodField()
+
+    def get_is_active(self, obj):
+        return obj.is_active()
 
 
 

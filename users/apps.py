@@ -12,28 +12,32 @@ class MembershipConfig(AppConfig):
     
 
     def ready(self):
-        from django_celery_beat.models import PeriodicTask, IntervalSchedule
-        from .tasks import remind_expiring_clients
+        try:
+            from django_celery_beat.models import PeriodicTask, IntervalSchedule
+            from .tasks import remind_expiring_clients
 
-        # Intenta limpiar duplicados si los hay
-        qs = IntervalSchedule.objects.filter(every=1, period=IntervalSchedule.DAYS)
-        if qs.count() > 1:
-            # deja solo la más antigua
-            first = qs.earliest('id')
-            qs.exclude(pk=first.pk).delete()
+            # Intenta limpiar duplicados si los hay
+            qs = IntervalSchedule.objects.filter(every=1, period=IntervalSchedule.DAYS)
+            if qs.count() > 1:
+                # deja solo la más antigua
+                first = qs.earliest('id')
+                qs.exclude(pk=first.pk).delete()
 
-        # crear un schedule que corra cada dia
-        schedule, _ = IntervalSchedule.objects.get_or_create(
-            every =1,
-            period = IntervalSchedule.DAYS
-        )
-        # registra la tarea si no existe
+            # crear un schedule que corra cada dia
+            schedule, _ = IntervalSchedule.objects.get_or_create(
+                every =1,
+                period = IntervalSchedule.DAYS
+            )
+            # registra la tarea si no existe
 
-        PeriodicTask.objects.update_or_create(
-            name="Tarea periódica",  # campo único
-            defaults={
-                "interval": schedule,
-                "task": "users.tasks.remind_expiring_clients",
-                # si pasas args, kwargs, start_time, etc. ponlos aquí dentro de defaults
-            }
-        )
+            PeriodicTask.objects.update_or_create(
+                name="Tarea periódica",  # campo único
+                defaults={
+                    "interval": schedule,
+                    "task": "users.tasks.remind_expiring_clients",
+                    # si pasas args, kwargs, start_time, etc. ponlos aquí dentro de defaults
+                }
+            )
+        except Exception as e:
+            # During initial migrations, tables might not exist yet
+            pass

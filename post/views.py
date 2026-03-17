@@ -6,6 +6,7 @@ from rest_framework import  permissions
 from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,UpdateAPIView,DestroyAPIView,RetrieveUpdateAPIView
 from .serializers import PostSerializer, PermissionSerializer, GroupSerializer, UserSerializer
 from .models import PostModels
+from users.models import User
 # Create your views here.
 
 class PostCreate(CreateAPIView):

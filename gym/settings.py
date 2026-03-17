@@ -26,8 +26,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
 
 
 # Application definition
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework.authtoken',
+    'corsheaders',
     'drf_yasg',
     'django_celery_beat',
     'users.apps.MembershipConfig',
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -87,8 +89,8 @@ DATABASES = {
         'NAME':get_secret('DB_NAME'),
         'USER':get_secret('USER'),
         'PASSWORD':get_secret('PASSWORD'),
-        'HOST':'localhost',
-        'PORT':'5432',
+        'HOST': os.environ.get('HOST', 'localhost'),
+        'PORT': os.environ.get('PORT', '5432'),
 }
 }
 
@@ -111,8 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # STMP DE GMAIL
-CELERY_BROKER_URL = 'redis://localhost:6379/0'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
+CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
 CELERY_BEAT_SCHEDULER  = "django_celery_beat.schedulers:DatabaseScheduler"
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -137,6 +139,11 @@ REST_FRAMEWORK = {
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
 
 LANGUAGE_CODE = 'es-ec'
 
