@@ -122,7 +122,7 @@ def low_stock_alert(request):
 #   Abrir caja
 class CashSessionOpenView(CreateAPIView):
     queryset = CashSession.objects.all()
-    serializer_class = CashSession
+    serializer_class = CashSessionSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
@@ -141,14 +141,14 @@ def cash_session_active(request):
     session = CashSession.objects.filter(closed_at__isnull=True).first()
     if not session:
         return Response({"detail":"No hay caja abierta"}, status=404)
-    data = CashSession(session).data 
-    return Response
+    data = CashSessionSerializer(session).data 
+    return Response(data)
 
 
 # Registrar trasaccion
 class CashTransactionCreate(CreateAPIView):
     queryset = CashTransaction.objects.all()
-    serializer_class = CashTransaction
+    serializer_class = CashTransactionSerializer
 
     def perform_create(self, serializer):
         session = CashSession.objects.filter(closed_at__isnull=True).first()

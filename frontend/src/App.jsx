@@ -7,6 +7,10 @@ import ClientDetail from './pages/ClientDetail';
 import ProductList from './pages/ProductList';
 import ProductDetail from './pages/ProductDetail';
 import ProductForm from './pages/ProductForm';
+import CashRegister from './pages/CashRegister';
+import PointOfSale from './pages/PointOfSale';
+import SaleList from './pages/SaleList';
+
 import authService from './services/authService';
 
 // Componente para proteger las rutas privadas
@@ -94,6 +98,32 @@ function App() {
           element={
             <PrivateRoute>
               <ProductForm />
+            </PrivateRoute>
+          } 
+        />
+
+        {/* ================= MODULO DE VENTAS Y CAJA ================= */}
+        <Route 
+          path="/cash" 
+          element={
+            <PrivateRoute>
+              <CashRegister />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/pos" 
+          element={
+            <PrivateRoute>
+              <PointOfSale />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/sales" 
+          element={
+            <PrivateRoute>
+              <SaleList />
             </PrivateRoute>
           } 
         />

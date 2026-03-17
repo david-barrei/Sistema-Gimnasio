@@ -1,5 +1,5 @@
-import { NavLink } from 'react-router-dom';
-import { FiHome, FiShoppingCart, FiUsers, FiFileText, FiSettings } from 'react-icons/fi';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
+import { FiHome, FiUsers, FiSettings, FiFileText, FiLogOut, FiBox, FiMonitor, FiDollarSign } from 'react-icons/fi';
 
 const Sidebar = () => {
   return (
@@ -20,10 +20,19 @@ const Sidebar = () => {
         <NavLink to="/dashboard" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Dashboard">
           <FiHome size={24} />
         </NavLink>
-        <NavLink to="/products" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Productos">
-          <FiShoppingCart size={24} />
+        <NavLink to="/pos" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Punto de Venta (POS)">
+          <FiMonitor size={24} />
         </NavLink>
-        <NavLink to="/clients" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Usuarios">
+        <NavLink to="/cash" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Caja">
+          <FiDollarSign size={24} />
+        </NavLink>
+        <NavLink to="/products" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Inventario de Productos">
+          <FiBox size={24} />
+        </NavLink>
+        <NavLink to="/sales" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Historial de Ventas">
+          <FiFileText size={24} />
+        </NavLink>
+        <NavLink to="/clients" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Usuarios / Clientes">
           <FiUsers size={24} />
         </NavLink>
         <NavLink to="/documents" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Documentos">

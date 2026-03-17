@@ -87,7 +87,7 @@ class CashSessionSerializer(serializers.ModelSerializer):
             'id','opened_at','opened_by','opening_balance',
             'closed_at','closing_balance','expected_balance','discrepancy','transactions',
         ]
-        read_only_fields = ['id','opened_at','opened_by','opening_balance','closed_at',
+        read_only_fields = ['id','opened_at','opened_by','closed_at',
                             'expected_balance','discrepancy','transactions']
 
 
