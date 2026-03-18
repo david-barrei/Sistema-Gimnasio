@@ -9,7 +9,7 @@
 
 Una aplicación Full-Stack moderna orientada a la producción y diseñada para gestionar centros de acondicionamiento físico. Cuenta con un robusto sistema de **Punto de Venta (POS)**, estricto **control de Caja Registradora**, seguimiento de suscripciones con recordatorios de correo electrónico en segundo plano automatizados y un **Dashboard** analítico visualmente atractivo.
 
-Este repositorio sirve como portafolio demostrando las mejores prácticas al integrar un backend desacoplado con **Django REST Framework** y un frontend moderno en **React + Vite**, todo completamente contenido y orquestado mediante **Docker**.
+
 
 ## 🌟 Características Principales
 
