@@ -22,7 +22,7 @@ def get_secret(secret_name, secrets=secrets):
 SECRET_KEY = get_secret('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True    
 
 ALLOWED_HOSTS = []
 
@@ -115,7 +115,14 @@ AUTH_PASSWORD_VALIDATORS = [
 # STMP DE GMAIL
 CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL', 'redis://localhost:6379/0')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND', 'redis://localhost:6379/1')
-CELERY_BEAT_SCHEDULER  = "django_celery_beat.schedulers:DatabaseScheduler"
+
+from celery.schedules import crontab
+CELERY_BEAT_SCHEDULE = {
+    'send_expiration_reminders_every_morning': {
+        'task': 'users.tasks.remind_expiring_clients',
+        'schedule': crontab(hour=8, minute=0), # Ejecutar todos los días a las 08:00 AM UTC
+    },
+}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'

@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 from .views import (ProductViews,ProductList,ProductDetail,ProductUpdate,
                     ProductDestroy,SaleCreate,SaleDetail,SaleList,SaleUpdate,SaleDestroy,
                     sales_by_month,low_stock_alert,CashSessionOpenView,cash_session_active,CashTransactionCreate,
-                    cash_session_close
+                    cash_session_close, dashboard_metrics
 
 )
 
@@ -34,6 +34,7 @@ urlpatterns = [
     # ESTADISTICAS / ALERTAS
     path('sales-month/',sales_by_month,name='sales_by_month'),
     path('low_stock/',low_stock_alert,name='stock'),
+    path('dashboard/',dashboard_metrics,name='dashboard_metrics'),
 
 ]
 

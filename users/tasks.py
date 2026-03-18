@@ -21,7 +21,7 @@ def remind_expiring_clients():
                 "¡No olvides renovarla a tiempo para seguir disfrutando del gimnasio!\n\n"
                 "— El equipo del Gym"
             ),
-            from_email="kevtamay@gmail.com",
+            from_email="EMAIL QUE ENVIA",
             recipient_list=[client.email],
         )
 

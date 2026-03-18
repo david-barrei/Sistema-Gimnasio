@@ -1,7 +1,18 @@
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FiHome, FiUsers, FiSettings, FiFileText, FiLogOut, FiBox, FiMonitor, FiDollarSign } from 'react-icons/fi';
+import authService from '../services/authService';
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    if (window.confirm("¿Seguro que deseas salir de tu cuenta?")) {
+      await authService.logout();
+      navigate('/login');
+    }
+  };
+
   return (
     <div 
       className="d-flex flex-column align-items-center py-4 vh-100" 
@@ -35,12 +46,10 @@ const Sidebar = () => {
         <NavLink to="/clients" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Usuarios / Clientes">
           <FiUsers size={24} />
         </NavLink>
-        <NavLink to="/documents" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Documentos">
-          <FiFileText size={24} />
-        </NavLink>
-        <NavLink to="/settings" className={({isActive}) => `sidebar-link ${isActive ? 'active' : ''}`} title="Ajustes">
+        {/* LOGOUT BUTTON MODIFICADO SOBRE ICONO DE SETTINGS COMO SOLICITADO */}
+        <a href="#" onClick={handleLogout} className="sidebar-link mt-auto" title="Cerrar Sesión">
           <FiSettings size={24} />
-        </NavLink>
+        </a>
       </nav>
     </div>
   );

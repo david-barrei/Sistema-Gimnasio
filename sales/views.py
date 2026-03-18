@@ -7,7 +7,10 @@ from rest_framework.generics import CreateAPIView,ListAPIView,RetrieveAPIView,Up
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.exceptions import ValidationError
+from datetime import timedelta
+from django.utils import timezone
 from .models import Product,Sale,CashSession,CashTransaction
+from users.models import Client
 from .serializers import ProductSerializers,SaleWriteSerializer,SaleReadSerializer,CashSessionSerializer,CashTransactionSerializer
 from .utils import adjust_stock_for_sale
 # Create your views here.
@@ -115,6 +118,53 @@ def low_stock_alert(request):
     qs = Product.objects.filter(stock__lte=threshold)
     data = [{"id": p.id, "name": p.name, "stock": p.stock} for p in qs]
     return Response(data)
+
+#         DASHBOARD INTEGRADO /////
+@api_view(['GET'])
+def dashboard_metrics(request):
+    today = timezone.now().date()
+    # 1. Miembros Activos (end_date >= hoy)
+    active_members = Client.objects.filter(end_date__gte=today).count()
+    
+    # 2. Ventas últimas 24 hrs (Evita bugs por TIME_ZONE='UTC' de Django en la noche)
+    last_24h = timezone.now() - timedelta(hours=24)
+    today_sales = Sale.objects.filter(date__gte=last_24h).aggregate(Sum('total'))['total__sum'] or Decimal('0.00')
+    
+    # 3. Alertas Vencimiento (próximos 7 días)
+    next_week = today + timedelta(days=7)
+    expiring_qs = Client.objects.filter(end_date__gte=today, end_date__lte=next_week).order_by('end_date')[:5]
+    expiring_members = [{"name": f"{c.first_name} {c.last_name}", "days_left": (c.end_date - today).days} for c in expiring_qs]
+    
+    # 4. Clases Siguientes (Simulado por ahora, o sacado de otro modelo futuro)
+    upcoming_classes = [
+        {"name": "Spinning", "participants": 7},
+        {"name": "Yoga", "participants": 2},
+        {"name": "Boxing", "participants": 3}
+    ]
+
+    # 5. Llegadas Recientes / Últimos Nuevos Clientes
+    recent_qs = Client.objects.all().order_by('-start_date', '-id')[:3]
+    recent_clients = [
+        {"name": f"{c.first_name} {c.last_name}", "plan": c.get_membership_type_display(), "joined": c.start_date.strftime("%d/%m/%Y")}
+        for c in recent_qs
+    ]
+
+    # 6. Gráfico de Actividad Semanal (Fake por ahora o calculado)
+    activity_graph = [
+        { "name": "Lun", "uv": 400 }, { "name": "Mar", "uv": 300 },
+        { "name": "Mie", "uv": 500 }, { "name": "Jue", "uv": 280 },
+        { "name": "Vie", "uv": 590 }, { "name": "Sab", "uv": 400 },
+        { "name": "Dom", "uv": 700 }
+    ]
+
+    return Response({
+        "active_members": active_members,
+        "today_sales": today_sales,
+        "expiring_members": expiring_members,
+        "upcoming_classes": upcoming_classes,
+        "recent_clients": recent_clients,
+        "activity_graph": activity_graph
+    })
 
 
 #         CONTROL DE CAJA /////

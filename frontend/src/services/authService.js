@@ -38,8 +38,26 @@ const authService = {
   /**
    * Elimina el token almacenado y cierra la sesión local.
    */
-  logout: () => {
-    localStorage.removeItem('token');
+  /**
+   * Elimina el token almacenado y cierra la sesión tanto en el backend como en local.
+   */
+  logout: async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (token) {
+        // Le avisa a Django que borre el Token en Base de datos
+        await axios.post(`${API_URL}/logout/`, {}, {
+          headers: {
+            'Authorization': `Token ${token}`
+          }
+        });
+      }
+    } catch (error) {
+      console.error("Error al cerrar sesión en el servidor:", error);
+    } finally {
+      // Siempre elimina la sesión local aunque el servidor falle (ej. token ya expirado)
+      localStorage.removeItem('token');
+    }
   },
 
   /**

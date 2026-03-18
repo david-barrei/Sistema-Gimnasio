@@ -1,40 +1,46 @@
-import { FiArrowUpCircle, FiTrendingUp, FiUsers } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
+import { FiArrowUpCircle, FiTrendingUp, FiUsers, FiLoader } from 'react-icons/fi';
 import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import dashboardService from '../services/dashboardService';
 import Layout from '../components/Layout';
-
-// --- Datos Mockeados para los Gráficos ---
-const activityData = [
-  { name: 'Lun', uv: 400 },
-  { name: 'Mar', uv: 300 },
-  { name: 'Mie', uv: 500 },
-  { name: 'Jue', uv: 280 },
-  { name: 'Vie', uv: 590 },
-  { name: 'Sab', uv: 400 },
-  { name: 'Dom', uv: 700 },
-];
-
-const salesData = [
-  { name: 'Lun', uv: 500 },
-  { name: 'Mar', uv: 700 },
-  { name: 'Mie', uv: 600 },
-  { name: 'Jue', uv: 800 },
-  { name: 'Vie', uv: 1200 },
-  { name: 'Sab', uv: 1000 },
-  { name: 'Dom', uv: 1530 },
-];
-
-const incomeData = [
-  { name: 'Semana 1', uv: 200 },
-  { name: 'Semana 2', uv: 100 },
-  { name: 'Semana 3', uv: 400 },
-  { name: 'Semana 4', uv: 300 },
-  { name: 'Semana 5', uv: 600 },
-  { name: 'Semana 6', uv: 500 },
-  { name: 'Semana 7', uv: 800 },
-];
 
 // --- Componente Dashboard ---
 const Dashboard = () => {
+
+  const [metrics, setMetrics] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchMetrics();
+  }, []);
+
+  const fetchMetrics = async () => {
+    try {
+      const data = await dashboardService.getMetrics();
+      setMetrics(data);
+    } catch (error) {
+      console.error("Error al cargar el Dashboard", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout title="DASHBOARD">
+        <div className="d-flex flex-column justify-content-center align-items-center mt-5 text-teal">
+          <FiLoader size={48} className="spin-animation mb-3" />
+          <h5>Cargando Métricas...</h5>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Prevenir crashes si falla la API
+  const data = metrics || {
+    active_members: 0, today_sales: 0, expiring_members: [], upcoming_classes: [], recent_clients: [], activity_graph: []
+  };
+
   return (
     <Layout title="DASHBOARD">
       <div className="row g-4 h-100">
@@ -45,7 +51,7 @@ const Dashboard = () => {
             <div>
               <p className="text-muted fw-bold mb-1 small text-uppercase">Miembros Activos</p>
               <div className="d-flex align-items-center gap-2">
-                <h2 className="display-6 fw-bold mb-0 text-main">1,208</h2>
+                <h2 className="display-6 fw-bold mb-0 text-main">{data.active_members}</h2>
                 <FiArrowUpCircle size={28} className="text-teal" />
               </div>
               <small className="text-muted mt-1 d-block">Mini trender trendo</small>
@@ -54,7 +60,7 @@ const Dashboard = () => {
             {/* Gráfico Mini (Area) */}
             <div style={{ width: '150px', height: '80px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={activityData}>
+                <AreaChart data={data.activity_graph}>
                   <defs>
                     <linearGradient id="colorUv1" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#14B8A6" stopOpacity={0.3}/>
@@ -74,14 +80,14 @@ const Dashboard = () => {
           <div className="card-custom h-100 d-flex flex-row p-4 align-items-center justify-content-between">
             <div>
               <p className="text-muted fw-bold mb-1 small text-uppercase">Ventas Hoy</p>
-              <h2 className="display-6 fw-bold mb-0 text-main">$1,530</h2>
+              <h2 className="display-6 fw-bold mb-0 text-main">${parseFloat(data.today_sales).toFixed(2)}</h2>
               <small className="text-muted mt-1 d-block">Mini orentas evento</small>
             </div>
             
             {/* Gráfico Mini (Area) */}
             <div style={{ width: '150px', height: '80px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={salesData}>
+                <AreaChart data={data.activity_graph}>
                   <defs>
                     <linearGradient id="colorUv2" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#14B8A6" stopOpacity={0.3}/>
@@ -125,21 +131,20 @@ const Dashboard = () => {
         <div className="col-12 col-md-6">
           <div className="card-custom h-100 p-4">
             <p className="text-muted fw-bold mb-1 small text-uppercase">Alertas Vencimiento</p>
-            <h3 className="fw-bold text-main mb-4">5 Members Expiring</h3>
+            <h3 className="fw-bold text-main mb-4">{data.expiring_members.length} Miembros Expiran Pronto</h3>
             
             <div className="row g-3">
-              <div className="col-6 d-flex justify-content-between border-bottom pb-2">
-                <span className="text-muted">Elexandra Name</span>
-                <span className="badge bg-light text-dark shadow-sm rounded-circle px-2">2</span>
-              </div>
-              <div className="col-6 d-flex justify-content-between border-bottom pb-2">
-                <span className="text-muted">Markina Gohnson</span>
-                <span className="badge bg-light text-dark shadow-sm rounded-circle px-2">2</span>
-              </div>
-              <div className="col-6 d-flex justify-content-between pb-2">
-                <span className="text-muted">Donalo Mairider</span>
-                <span className="badge bg-light text-dark shadow-sm rounded-circle px-2">1</span>
-              </div>
+              {data.expiring_members.map((member, idx) => (
+                <div key={idx} className="col-12 d-flex justify-content-between border-bottom pb-2">
+                  <span className="text-muted">{member.name}</span>
+                  <span className="badge bg-danger bg-opacity-10 text-danger shadow-sm rounded-pill px-3">
+                    En {member.days_left} días
+                  </span>
+                </div>
+              ))}
+              {data.expiring_members.length === 0 && (
+                <div className="col-12 text-muted small">No hay vencimientos próximos (7 días).</div>
+              )}
             </div>
           </div>
         </div>
@@ -151,7 +156,7 @@ const Dashboard = () => {
             
             <div style={{ width: '100%', height: '220px' }}>
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={incomeData}>
+                <AreaChart data={data.activity_graph}>
                   <defs>
                     <linearGradient id="colorIncome" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#14B8A6" stopOpacity={0.4}/>
@@ -185,10 +190,7 @@ const Dashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {[
-                    {name: 'Nama Menta', time: '10:00 al 16:00'},
-                    {name: 'Ncola Smelo', time: '10:00 al 16:00'},
-                  ].map((user, idx) => (
+                  {data.recent_clients.map((user, idx) => (
                     <tr key={idx}>
                       <td className="py-3">
                         <div className="rounded-circle bg-secondary d-flex align-items-center justify-content-center text-white" style={{width: 35, height: 35}}>
@@ -196,10 +198,13 @@ const Dashboard = () => {
                         </div>
                       </td>
                       <td className="fw-semibold text-main">{user.name}</td>
-                      <td><span className="badge-active">Active</span></td>
-                      <td className="text-muted small">{user.time}</td>
+                      <td><span className="badge-active bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">{user.plan}</span></td>
+                      <td className="text-muted small">Ingreso el {user.joined}</td>
                     </tr>
                   ))}
+                  {data.recent_clients.length === 0 && (
+                    <tr><td colSpan="4" className="text-center text-muted py-3">No hay registros de clientes nuevos recientes.</td></tr>
+                  )}
                 </tbody>
               </table>
             </div>

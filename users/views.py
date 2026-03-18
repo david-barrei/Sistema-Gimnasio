@@ -46,6 +46,14 @@ class LoginTokenView(APIView):
           else:
                return Response({'error':'Credenciales no validas '},status=status.HTTP_401_UNAUTHORIZED)
 
+class LogoutView(APIView):
+    def post(self, request):
+        if request.user.is_authenticated:
+            # Elimina el token del usuario actual cerrando la sesión
+            Token.objects.filter(user=request.user).delete()
+            return Response({"detail": "Sesión cerrada correctamente."}, status=status.HTTP_200_OK)
+        return Response({"detail": "No estabas autenticado."}, status=status.HTTP_400_BAD_REQUEST)
+
 class ClientViews(CreateAPIView):
      
     serializer_class = ClientSerializers
